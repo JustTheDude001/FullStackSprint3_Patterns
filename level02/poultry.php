@@ -18,7 +18,7 @@ class Turkey {
        }
 
        public function fly() {
-       echo "I'm flying a short distance \n";
+		echo "I'm flying a short distance \n";
        }
 }
 
@@ -35,12 +35,10 @@ class TurkeyAdapter extends Duck{
 	}
 	
 	public function fly(){
-		$this->adaptee->fly();
-		$this->adaptee->fly();
-		$this->adaptee->fly();
-		$this->adaptee->fly();
-		$this->adaptee->fly();
 		
+		for($i=0; $i<5; $i++){
+			$this->adaptee->fly();
+		}	
 	}
 	
 
