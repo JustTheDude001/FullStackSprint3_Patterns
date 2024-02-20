@@ -25,14 +25,14 @@
 			$this->isHighSeason = True;
 		}
 		public function addStockDiscount(){
-			$this->addStockDiscount = True;
+			$this->bigStock = True;
 		}
 		
 		public function deleteSeasonDiscount(){
 			$this->isHighSeason = False;
 		}
 		public function deleteStockDiscount(){
-			$this->addStockDiscount = False;
+			$this->bigStock = False;
 		}
 
 	}
@@ -54,46 +54,89 @@
 			$this->isHighSeason = True;
 		}
 		public function addStockDiscount(){
-			$this->addStockDiscount = True;
+			$this->bigStock = True;
 		}
 		
 		public function deleteSeasonDiscount(){
 			$this->isHighSeason = False;
 		}
 		public function deleteStockDiscount(){
-			$this->addStockDiscount = False;
+			$this->bigStock = False;
 		}
 
 	}
 	
-	// I am not sure if what I have done it was what was asked... But I tried ^^
-	
-	
-	function test01(){
-		$bmw01 = new bmwCouponGenerator();
-		var_dump($bmw01->couponGenerator());
-		$bmw01->addSeasonDiscount();
-		var_dump($bmw01->couponGenerator());
-		$bmw01->deleteSeasonDiscount();
-		var_dump($bmw01->couponGenerator());
-		$bmw01->addSeasonDiscount();
-		$bmw01->addStockDiscount();
-		var_dump($bmw01->couponGenerator());
+	class couponGeneratorService_Context{
+		private $carCouponGeneratorStrategy;
 		
 		
-		$mercedes01 = new mercedesCouponGenerator();
-		var_dump($mercedes01->couponGenerator());
-		$mercedes01->addSeasonDiscount();
-		var_dump($mercedes01->couponGenerator());
-		$mercedes01->deleteSeasonDiscount();
-		var_dump($mercedes01->couponGenerator());
-		$mercedes01->addSeasonDiscount();
-		$mercedes01->addStockDiscount();
-		var_dump($mercedes01->couponGenerator());
+		function __construct(carCouponGenerator $strategy){
+			$this->carCouponGeneratorStrategy = $strategy;
+		}
+		
+		function setStrategy(carCouponGenerator $strategy){
+			$this->carCouponGeneratorStrategy = $strategy;
+		}
+		
+		public function addSeasonDiscount(){
+			return $this->carCouponGeneratorStrategy->addSeasonDiscount();
+		}
+		public function addStockDiscount(){
+			return $this->carCouponGeneratorStrategy->addStockDiscount();
+		}
+		
+		public function deleteSeasonDiscount(){
+			return $this->carCouponGeneratorStrategy->deleteSeasonDiscount();
+		}
+		public function deleteStockDiscount(){
+			return $this->carCouponGeneratorStrategy->deleteStockDiscount();
+		}
+		public function couponGenerator(){
+			return $this->carCouponGeneratorStrategy->couponGenerator();
+		}
+		
+		
+	
+	}
+	
+	
+	
+	function test_strategy(){
+		//Create a new object of couponGeneratorService
+		$couponGeneratorServiceObj = new couponGeneratorService_Context(new bmwCouponGenerator());
+		
+		//Set the strategy for the couponGeneratorServiceObj
+		$couponGeneratorServiceObj->setStrategy(new bmwCouponGenerator());
+		
+		//Process the coupon and print it
+		var_dump($couponGeneratorServiceObj->couponGenerator());
+		
+		//Set both coupons and print result
+		$couponGeneratorServiceObj->addSeasonDiscount();
+		var_dump($couponGeneratorServiceObj->couponGenerator());
+		$couponGeneratorServiceObj->deleteStockDiscount();
+		var_dump($couponGeneratorServiceObj->couponGenerator());
+		
+		//As an strategy the object should be changeable in runtime:
+		//Change bmw for mercedes and print
+		//Set the strategy for the couponGeneratorServiceObj
+		$couponGeneratorServiceObj->setStrategy(new mercedesCouponGenerator);
+		var_dump($couponGeneratorServiceObj->couponGenerator());
+		
+		//Set both coupons and print result
+		$couponGeneratorServiceObj->addSeasonDiscount();
+		var_dump($couponGeneratorServiceObj->couponGenerator());
+		$couponGeneratorServiceObj->deleteStockDiscount();
+		var_dump($couponGeneratorServiceObj->couponGenerator());
+		
 		
 		
 		
 	}
 	
-	test01();
+	// I am again not sure if what I have done it was what was asked... But I tried again ^^
+	// I think at least now it is better than before...
+	//Okay there was a mistake with the booleans names as well, I think it is already corrected
+	
+	test_strategy();
 ?>
